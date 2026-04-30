@@ -1,78 +1,110 @@
 <!DOCTYPE html>
 <html lang="kk">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>DataLab Kids | Мұғалім кабинеті</title>
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body>
+<body onload="loadTeacherPanel()">
 
 <header class="navbar">
   <div class="logo">📊 DataLab Kids</div>
   <nav>
     <a href="index.html">Басты бет</a>
+    <a href="diagnostic.html">Диагностика</a>
     <a href="learn.html">Үйрену</a>
-    <a href="tasks.html">Практика</a>
-    <a href="ai-helper.html">AI көмекші</a>
+    <a href="tasks.html">Тапсырмалар</a>
+    <a href="ai-helper.html">AI-көмекші</a>
     <a href="progress.html">Прогресс</a>
     <a href="teacher.html">Мұғалім</a>
   </nav>
 </header>
 
 <section class="page-head">
+  <span class="badge">Мұғалім панелі</span>
   <h1>Мұғалім кабинеті</h1>
-  <p>Сынып нәтижесін бақылау және талдау бөлімі.</p>
+  <p>
+    Бұл бөлім оқушының диагностика және практикалық тапсырмалар бойынша нәтижесін талдауға арналған.
+  </p>
 </section>
 
 <section class="dashboard">
   <div class="dash-card">
-    <h3>Оқушы саны</h3>
-    <p>40</p>
+    <h3>Диагностика</h3>
+    <p id="teacherDiagnostic">0%</p>
   </div>
+
   <div class="dash-card">
-    <h3>Орташа нәтиже</h3>
-    <p>81%</p>
+    <h3>Практика</h3>
+    <p id="teacherTask">0%</p>
   </div>
+
   <div class="dash-card">
-    <h3>Белсенділік</h3>
-    <p>86%</p>
+    <h3>Жалпы нәтиже</h3>
+    <p id="teacherTotal">0%</p>
   </div>
+
   <div class="dash-card">
-    <h3>Қиын дағды</h3>
-    <p>Қорытынды</p>
+    <h3>Деңгей</h3>
+    <p id="teacherLevel">—</p>
   </div>
 </section>
 
+<section class="chart-section">
+  <h2>Мұғалімге арналған дағды диаграммасы</h2>
+  <canvas id="teacherChart"></canvas>
+</section>
+
 <section class="table-box">
-  <h2>Оқушылар нәтижесі</h2>
+  <h2>Дағдылар бойынша бақылау</h2>
   <table>
     <tr>
-      <th>Оқушы</th>
-      <th>Түсіну</th>
-      <th>Салыстыру</th>
-      <th>Талдау</th>
-      <th>Қорытынды</th>
+      <th>Дағды</th>
+      <th>Көрсеткіш</th>
+      <th>Педагогикалық қорытынды</th>
     </tr>
-    <tr><td>Аружан</td><td>90%</td><td>86%</td><td>84%</td><td>82%</td></tr>
-    <tr><td>Әмір</td><td>84%</td><td>80%</td><td>79%</td><td>76%</td></tr>
-    <tr><td>Дана</td><td>82%</td><td>78%</td><td>76%</td><td>74%</td></tr>
-    <tr><td>Нұрасыл</td><td>88%</td><td>84%</td><td>83%</td><td>80%</td></tr>
+    <tr>
+      <td>Деректерді түсіну</td>
+      <td id="teacherUnderstand">0%</td>
+      <td id="teacherUnderstandNote">—</td>
+    </tr>
+    <tr>
+      <td>Салыстыру</td>
+      <td id="teacherCompare">0%</td>
+      <td id="teacherCompareNote">—</td>
+    </tr>
+    <tr>
+      <td>Талдау</td>
+      <td id="teacherAnalyze">0%</td>
+      <td id="teacherAnalyzeNote">—</td>
+    </tr>
+    <tr>
+      <td>Қорытынды жасау</td>
+      <td id="teacherConclusion">0%</td>
+      <td id="teacherConclusionNote">—</td>
+    </tr>
   </table>
 </section>
 
 <section class="recommend">
   <h2>Әдістемелік ұсыныс</h2>
-  <p>
-    Әр тапсырмадан кейін оқушыға «Неге бұлай ойлайсың?»,
-    «Қандай дерекке сүйендің?», «Қорытындыңды қалай дәлелдейсің?»
-    деген сұрақтарды қолдану ұсынылады.
+  <p id="teacherAdvice">
+    Нәтиже шыққаннан кейін оқушыға арналған ұсыныс автоматты түрде көрсетіледі.
   </p>
+</section>
+
+<section class="danger-zone">
+  <h2>Нәтижені тазарту</h2>
+  <p>Жаңа оқушы немесе жаңа зерттеу бастау үшін сақталған нәтижелерді өшіруге болады.</p>
+  <button class="btn danger" onclick="clearAllResults()">Нәтижелерді тазарту</button>
 </section>
 
 <footer>
   <p>© 2026 DataLab Kids</p>
 </footer>
 
+<script src="js/app.js"></script>
 </body>
 </html>
