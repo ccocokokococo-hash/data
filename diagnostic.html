@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DataLab Kids | Диагностика</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<header class="navbar">
+  <div class="logo">📊 DataLab Kids</div>
+  <nav>
+    <a href="index.html">Басты бет</a>
+    <a href="diagnostic.html">Диагностика</a>
+    <a href="learn.html">Үйрену</a>
+    <a href="tasks.html">Тапсырмалар</a>
+    <a href="ai-helper.html">AI-көмекші</a>
+    <a href="progress.html">Прогресс</a>
+    <a href="teacher.html">Мұғалім</a>
+  </nav>
+</header>
+
+<section class="page-head">
+  <span class="badge">1-кезең</span>
+  <h1>Бастапқы диагностика</h1>
+  <p>
+    Бұл бөлім оқушының деректерді түсіну, салыстыру, талдау және қорытынды жасау
+    деңгейін анықтайды.
+  </p>
+</section>
+
+<section class="task-card">
+  <h2>1-блок. Кестені оқу</h2>
+  <p>4-сынып оқушыларының сүйікті пәндері бойынша деректер берілген.</p>
+
+  <table>
+    <tr>
+      <th>Пән</th>
+      <th>Оқушы саны</th>
+    </tr>
+    <tr><td>Математика</td><td>10</td></tr>
+    <tr><td>Қазақ тілі</td><td>7</td></tr>
+    <tr><td>Дүниетану</td><td>5</td></tr>
+    <tr><td>Ағылшын тілі</td><td>4</td></tr>
+    <tr><td>Көркем еңбек</td><td>3</td></tr>
+  </table>
+
+  <label>1. Ең көп таңдалған пән қайсы?</label>
+  <input id="d1" type="text" placeholder="Жауабыңды жаз..." />
+
+  <label>2. Ең аз таңдалған пән қайсы?</label>
+  <input id="d2" type="text" placeholder="Жауабыңды жаз..." />
+
+  <label>3. Математика мен дүниетану пәндерінің айырмашылығы қанша оқушы?</label>
+  <input id="d3" type="text" placeholder="Санмен жаз..." />
+</section>
+
+<section class="task-card">
+  <h2>2-блок. Диаграмма логикасы</h2>
+  <p>Берілген деректер бойынша ойлан.</p>
+
+  <div class="visual-bars">
+    <div><span style="width:100%">Математика — 10</span></div>
+    <div><span style="width:70%">Қазақ тілі — 7</span></div>
+    <div><span style="width:50%">Дүниетану — 5</span></div>
+    <div><span style="width:40%">Ағылшын — 4</span></div>
+    <div><span style="width:30%">Көркем еңбек — 3</span></div>
+  </div>
+
+  <label>4. Диаграммада ең ұзын баған қай пәнге тиесілі?</label>
+  <input id="d4" type="text" placeholder="Жауабыңды жаз..." />
+
+  <label>5. Бұл деректерден қандай қорытынды жасауға болады?</label>
+  <textarea id="d5" placeholder="Қорытынды жаз..."></textarea>
+</section>
+
+<section class="task-card final-card">
+  <h2>Диагностика нәтижесін сақтау</h2>
+  <p>Жауаптарыңды тексеріп, бастапқы деңгейіңді сақта.</p>
+  <button class="btn primary" onclick="checkDiagnostic()">Нәтижені сақтау</button>
+  <div id="diagnosticResult" class="result-box"></div>
+</section>
+
+<footer>
+  <p>© 2026 DataLab Kids</p>
+</footer>
+
+<script src="js/app.js"></script>
+</body>
+</html>
