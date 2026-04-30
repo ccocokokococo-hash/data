@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="kk">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DataLab Kids | Практикалық жұмыс</title>
-  <link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DataLab Kids | Тапсырмалар</title>
+  <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
 
@@ -12,73 +12,68 @@
   <div class="logo">📊 DataLab Kids</div>
   <nav>
     <a href="index.html">Басты бет</a>
+    <a href="diagnostic.html">Диагностика</a>
     <a href="learn.html">Үйрену</a>
-    <a href="tasks.html">Практика</a>
-    <a href="ai-helper.html">AI көмекші</a>
+    <a href="tasks.html">Тапсырмалар</a>
+    <a href="ai-helper.html">AI-көмекші</a>
     <a href="progress.html">Прогресс</a>
     <a href="teacher.html">Мұғалім</a>
   </nav>
 </header>
 
 <section class="page-head">
-  <h1>Практикалық зерттеу бөлімі</h1>
+  <span class="badge">3-кезең</span>
+  <h1>Практикалық тапсырмалар</h1>
   <p>
-    Бұл бөлім ғылыми жоба логикасымен құрылған:
-    бастапқы диагностика, дерек жинау, талдау, қате табу және қорытынды бағалау.
+    Бұл бөлімде оқушы нақты өмірлік деректерді оқиды, салыстырады,
+    талдайды, қате қорытындыны табады және өз зерттеуін жасайды.
   </p>
 </section>
 
 <section class="research-info">
-  <h2>Зерттеу мақсаты</h2>
+  <h2>Практикалық бөлімнің мақсаты</h2>
   <p>
-    4-сынып оқушыларының деректерді түсіну, салыстыру, талдау және қорытынды жасау дағдыларын дамыту.
+    Оқушылардың деректерді түсіну, салыстыру, талдау, қате табу және
+    дәлелді қорытынды жасау дағдыларын дамыту.
   </p>
+
+  <div class="mini-grid">
+    <div class="mini-card">Дерек оқу</div>
+    <div class="mini-card">Салыстыру</div>
+    <div class="mini-card">Есептеу</div>
+    <div class="mini-card">Қате талдау</div>
+    <div class="mini-card">Қорытынды</div>
+  </div>
 </section>
 
 <section class="task-card">
-  <h2>1-блок. Бастапқы диагностика: сүйікті пәндер</h2>
+  <h2>1-блок. Ауа райы деректерін талдау</h2>
+
   <table>
-    <tr><th>Пән</th><th>Оқушы саны</th></tr>
-    <tr><td>Математика</td><td>9</td></tr>
-    <tr><td>Қазақ тілі</td><td>6</td></tr>
-    <tr><td>Дүниетану</td><td>5</td></tr>
-    <tr><td>Ағылшын тілі</td><td>4</td></tr>
-    <tr><td>Көркем еңбек</td><td>3</td></tr>
+    <tr><th>Күн</th><th>Температура</th><th>Ауа райы</th></tr>
+    <tr><td>Дүйсенбі</td><td>18°C</td><td>Бұлтты</td></tr>
+    <tr><td>Сейсенбі</td><td>20°C</td><td>Күн ашық</td></tr>
+    <tr><td>Сәрсенбі</td><td>17°C</td><td>Жаңбыр</td></tr>
+    <tr><td>Бейсенбі</td><td>22°C</td><td>Күн ашық</td></tr>
+    <tr><td>Жұма</td><td>21°C</td><td>Бұлтты</td></tr>
   </table>
 
-  <label>1. Ең көп таңдалған пән қайсы?</label>
-  <input id="q1" type="text">
+  <label>1. Ең жылы күн қай күн?</label>
+  <input id="t1" type="text" />
 
-  <label>2. Ең аз таңдалған пән қайсы?</label>
-  <input id="q2" type="text">
+  <label>2. Ең салқын күн қай күн?</label>
+  <input id="t2" type="text" />
 
-  <label>3. Математика мен ағылшын тілінің айырмасы қанша?</label>
-  <input id="q3" type="text">
+  <label>3. Орташа температураны тап.</label>
+  <input id="t3" type="text" placeholder="Мысалы: 19.6" />
+
+  <label>4. Апта бойынша қандай қорытынды жасауға болады?</label>
+  <textarea id="t4"></textarea>
 </section>
 
 <section class="task-card">
-  <h2>2-блок. Ауа райы деректерін талдау</h2>
-  <table>
-    <tr><th>Күн</th><th>Температура</th></tr>
-    <tr><td>Дүйсенбі</td><td>18°C</td></tr>
-    <tr><td>Сейсенбі</td><td>20°C</td></tr>
-    <tr><td>Сәрсенбі</td><td>17°C</td></tr>
-    <tr><td>Бейсенбі</td><td>22°C</td></tr>
-    <tr><td>Жұма</td><td>21°C</td></tr>
-  </table>
+  <h2>2-блок. Күн тәртібін зерттеу</h2>
 
-  <label>4. Ең жылы күн қай күн?</label>
-  <input id="q4" type="text">
-
-  <label>5. Ең салқын күн қай күн?</label>
-  <input id="q5" type="text">
-
-  <label>6. Орташа температураны тап.</label>
-  <input id="q6" type="text" placeholder="Мысалы: 19.6">
-</section>
-
-<section class="task-card">
-  <h2>3-блок. Күн тәртібін зерттеу</h2>
   <table>
     <tr><th>Іс-әрекет</th><th>Уақыт</th></tr>
     <tr><td>Сабақ</td><td>5 сағат</td></tr>
@@ -86,20 +81,25 @@
     <tr><td>Ойын</td><td>3 сағат</td></tr>
     <tr><td>Гаджет</td><td>4 сағат</td></tr>
     <tr><td>Ұйқы</td><td>9 сағат</td></tr>
+    <tr><td>Спорт</td><td>1 сағат</td></tr>
   </table>
 
-  <label>7. Ең көп уақыт неге жұмсалады?</label>
-  <input id="q7" type="text">
+  <label>5. Ең көп уақыт неге жұмсалады?</label>
+  <input id="t5" type="text" />
 
-  <label>8. Гаджет уақыты үй тапсырмасынан қанша сағат көп?</label>
-  <input id="q8" type="text">
+  <label>6. Гаджет уақыты үй тапсырмасынан қанша сағат көп?</label>
+  <input id="t6" type="text" />
 
-  <label>9. Осы күн тәртібіне ұсыныс жаз.</label>
-  <textarea id="q9"></textarea>
+  <label>7. Спорт уақыты жеткілікті ме? Неге?</label>
+  <textarea id="t7"></textarea>
+
+  <label>8. Күн тәртібін жақсарту бойынша ұсыныс жаз.</label>
+  <textarea id="t8"></textarea>
 </section>
 
 <section class="task-card">
-  <h2>4-блок. Кітап оқу деректерін талдау</h2>
+  <h2>3-блок. Кітап оқу деректерін талдау</h2>
+
   <table>
     <tr><th>Оқушы</th><th>Бір аптада оқыған бет саны</th></tr>
     <tr><td>Аружан</td><td>28</td></tr>
@@ -109,71 +109,85 @@
     <tr><td>Әлия</td><td>30</td></tr>
   </table>
 
-  <label>10. Ең көп оқыған оқушы кім?</label>
-  <input id="q10" type="text">
+  <label>9. Ең көп кітап оқыған оқушы кім?</label>
+  <input id="t9" type="text" />
+
+  <label>10. Ең аз кітап оқыған оқушы кім?</label>
+  <input id="t10" type="text" />
 
   <label>11. Жалпы неше бет оқылды?</label>
-  <input id="q11" type="text">
+  <input id="t11" type="text" />
 
   <label>12. Орташа көрсеткіш қанша бет?</label>
-  <input id="q12" type="text">
+  <input id="t12" type="text" />
+
+  <label>13. Бұл деректен қандай қорытынды жасауға болады?</label>
+  <textarea id="t13"></textarea>
 </section>
 
 <section class="task-card">
-  <h2>5-блок. Дүкендегі бағаны салыстыру</h2>
+  <h2>4-блок. Дүкендегі бағаны салыстыру</h2>
+
   <table>
     <tr><th>Зат</th><th>Бағасы</th></tr>
     <tr><td>Дәптер</td><td>120 тг</td></tr>
     <tr><td>Қалам</td><td>90 тг</td></tr>
     <tr><td>Өшіргіш</td><td>70 тг</td></tr>
     <tr><td>Сызғыш</td><td>150 тг</td></tr>
+    <tr><td>Қарындаш</td><td>80 тг</td></tr>
   </table>
 
-  <label>13. Ең қымбат зат қайсы?</label>
-  <input id="q13" type="text">
+  <label>14. Ең қымбат зат қайсы?</label>
+  <input id="t14" type="text" />
 
-  <label>14. Ең арзан зат қайсы?</label>
-  <input id="q14" type="text">
+  <label>15. Ең арзан зат қайсы?</label>
+  <input id="t15" type="text" />
 
-  <label>15. Дәптер, қалам және өшіргіш бірге қанша тұрады?</label>
-  <input id="q15" type="text">
+  <label>16. Дәптер, қалам және өшіргіш бірге қанша тұрады?</label>
+  <input id="t16" type="text" />
+
+  <label>17. 500 теңгеге қандай заттар алуға болады?</label>
+  <textarea id="t17"></textarea>
 </section>
 
 <section class="task-card">
-  <h2>6-блок. Қате талдау</h2>
+  <h2>5-блок. Қате қорытындыны анықтау</h2>
+
   <div class="wrong-box">
-    «Ең көп таңдалған пән — қазақ тілі, себебі қазақ тілін 6 оқушы таңдаған».
+    «Ең көп уақыт ойынға кетеді, себебі ойынға 3 сағат бөлінген».
   </div>
 
-  <label>16. Бұл қорытынды дұрыс па?</label>
-  <input id="q16" type="text" placeholder="Дұрыс / Қате">
+  <label>18. Бұл қорытынды дұрыс па?</label>
+  <input id="t18" type="text" placeholder="Дұрыс / Қате" />
 
-  <label>17. Дұрыс қорытындыны жаз.</label>
-  <textarea id="q17"></textarea>
+  <label>19. Дұрыс қорытындыны жаз.</label>
+  <textarea id="t19"></textarea>
 </section>
 
 <section class="task-card">
-  <h2>7-блок. Өз зерттеуіңді жаса</h2>
+  <h2>6-блок. Өз зерттеуіңді жаса</h2>
+  <p>Өз сыныбың бойынша шағын дерек жина.</p>
 
-  <label>18. Зерттеу тақырыбың</label>
-  <input id="q18" type="text" placeholder="Мысалы: Сүйікті спорт түрлері">
+  <label>20. Зерттеу тақырыбың қандай?</label>
+  <input id="t20" type="text" placeholder="Мысалы: Сүйікті спорт түрлері" />
 
-  <label>19. Жинаған деректерің</label>
-  <textarea id="q19" placeholder="Мысалы: футбол — 10, жүзу — 5, би — 7"></textarea>
+  <label>21. Жинаған деректеріңді жаз.</label>
+  <textarea id="t21" placeholder="Мысалы: футбол — 10, жүзу — 5, би — 7"></textarea>
 
-  <label>20. Қорытынды</label>
-  <textarea id="q20"></textarea>
+  <label>22. Осы дерек бойынша қандай қорытынды жасадың?</label>
+  <textarea id="t22"></textarea>
 </section>
 
 <section class="task-card final-card">
   <h2>Қорытынды бағалау</h2>
-  <p>Барлық тапсырманы орындағаннан кейін нәтижеңді тексер.</p>
-  <button class="btn primary" onclick="checkTasks()">Нәтижені тексеру</button>
-  <div id="resultBox" class="result-box"></div>
+  <p>Барлық жауаптар бойынша практикалық нәтиже автоматты есептеледі.</p>
+
+  <button class="btn primary" onclick="checkTasks()">Нәтижені сақтау</button>
+  <div id="taskResult" class="result-box"></div>
 </section>
 
 <footer>
-  <p>© 2026 DataLab Kids | Практикалық зерттеу</p>
+  <p>© 2026 DataLab Kids | Практикалық зерттеу бөлімі</p>
 </footer>
 
 <script src="js/app.js"></script>
