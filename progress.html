@@ -1,64 +1,93 @@
 <!DOCTYPE html>
 <html lang="kk">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>DataLab Kids | Прогресс</title>
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body>
+<body onload="loadProgress()">
 
 <header class="navbar">
   <div class="logo">📊 DataLab Kids</div>
   <nav>
     <a href="index.html">Басты бет</a>
+    <a href="diagnostic.html">Диагностика</a>
     <a href="learn.html">Үйрену</a>
-    <a href="tasks.html">Практика</a>
-    <a href="ai-helper.html">AI көмекші</a>
+    <a href="tasks.html">Тапсырмалар</a>
+    <a href="ai-helper.html">AI-көмекші</a>
     <a href="progress.html">Прогресс</a>
     <a href="teacher.html">Мұғалім</a>
   </nav>
 </header>
 
 <section class="page-head">
+  <span class="badge">Автоматты аналитика</span>
   <h1>Оқушы прогресі</h1>
-  <p>Деректермен жұмыс дағдылары бойынша нәтиже.</p>
+  <p>
+    Прогресс диагностика мен практикалық тапсырмалардағы нақты жауаптар негізінде құрылады.
+  </p>
 </section>
 
 <section class="progress-grid">
-  <div class="progress-card">
-    <h3>Деректерді түсіну</h3>
-    <div class="bar"><span style="width:85%"></span></div>
-    <b>85%</b>
+  <div class="progress-card main-progress">
+    <h2>Жалпы нәтиже</h2>
+    <div class="big-percent" id="totalText">0%</div>
+    <p id="levelText">Деңгей анықталмады</p>
   </div>
 
   <div class="progress-card">
-    <h3>Салыстыру</h3>
-    <div class="bar"><span style="width:81%"></span></div>
-    <b>81%</b>
+    <h3>Диагностика</h3>
+    <div class="bar"><span id="diagnosticBar"></span></div>
+    <b id="diagnosticText">0%</b>
   </div>
 
   <div class="progress-card">
-    <h3>Талдау</h3>
-    <div class="bar"><span style="width:80%"></span></div>
-    <b>80%</b>
+    <h3>Практикалық жұмыс</h3>
+    <div class="bar"><span id="taskBar"></span></div>
+    <b id="taskText">0%</b>
   </div>
 
   <div class="progress-card">
-    <h3>Қорытынды жасау</h3>
-    <div class="bar"><span style="width:79%"></span></div>
-    <b>79%</b>
+    <h3>Ұсыныс</h3>
+    <p id="adviceText">Нәтиже шыққаннан кейін ұсыныс көрсетіледі.</p>
   </div>
 </section>
 
+<section class="chart-section">
+  <h2>Дағды бойынша диаграмма</h2>
+  <canvas id="skillsChart"></canvas>
+</section>
+
 <section class="table-box">
-  <h2>Before / After нәтижесі</h2>
+  <h2>Дағды бойынша талдау</h2>
   <table>
-    <tr><th>Дағды</th><th>Бастапқы</th><th>Соңғы</th><th>Өсу</th></tr>
-    <tr><td>Деректерді түсіну</td><td>47%</td><td>85%</td><td>+38%</td></tr>
-    <tr><td>Салыстыру</td><td>45%</td><td>81%</td><td>+36%</td></tr>
-    <tr><td>Талдау</td><td>43%</td><td>80%</td><td>+37%</td></tr>
-    <tr><td>Қорытынды</td><td>41%</td><td>79%</td><td>+38%</td></tr>
+    <tr>
+      <th>Дағды</th>
+      <th>Нәтиже</th>
+      <th>Бағалау</th>
+    </tr>
+    <tr>
+      <td>Деректерді түсіну</td>
+      <td id="skillUnderstandPercent">0%</td>
+      <td id="skillUnderstandLevel">—</td>
+    </tr>
+    <tr>
+      <td>Салыстыру</td>
+      <td id="skillComparePercent">0%</td>
+      <td id="skillCompareLevel">—</td>
+    </tr>
+    <tr>
+      <td>Талдау</td>
+      <td id="skillAnalyzePercent">0%</td>
+      <td id="skillAnalyzeLevel">—</td>
+    </tr>
+    <tr>
+      <td>Қорытынды жасау</td>
+      <td id="skillConclusionPercent">0%</td>
+      <td id="skillConclusionLevel">—</td>
+    </tr>
   </table>
 </section>
 
@@ -66,5 +95,6 @@
   <p>© 2026 DataLab Kids</p>
 </footer>
 
+<script src="js/app.js"></script>
 </body>
 </html>
