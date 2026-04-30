@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="kk">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DataLab Kids | Үйрену</title>
-  <link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DataLab Kids | Деректерді үйрену</title>
+  <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
 
@@ -12,33 +12,39 @@
   <div class="logo">📊 DataLab Kids</div>
   <nav>
     <a href="index.html">Басты бет</a>
+    <a href="diagnostic.html">Диагностика</a>
     <a href="learn.html">Үйрену</a>
-    <a href="tasks.html">Практика</a>
-    <a href="ai-helper.html">AI көмекші</a>
+    <a href="tasks.html">Тапсырмалар</a>
+    <a href="ai-helper.html">AI-көмекші</a>
     <a href="progress.html">Прогресс</a>
     <a href="teacher.html">Мұғалім</a>
   </nav>
 </header>
 
 <section class="page-head">
-  <h1>Деректер әлемі</h1>
-  <p>Бұл бөлімде оқушы дерек деген не екенін және оны қалай қолдануға болатынын үйренеді.</p>
+  <span class="badge">2-кезең</span>
+  <h1>Деректерді үйрену</h1>
+  <p>
+    Бұл бөлімде оқушы дерек деген не екенін, деректердің түрлерін және
+    олармен қалай жұмыс жасау керектігін үйренеді.
+  </p>
 </section>
 
 <section class="content-grid">
-  <div class="card big">
+  <div class="info-card big">
     <h2>Деректер деген не?</h2>
     <p>
-      Деректер — белгілі бір құбылыс туралы ақпараттар жиынтығы.
-      Мысалы: оқушылар саны, ауа райы, сүйікті пәндер, күн тәртібі, кітап оқу нәтижесі.
+      Деректер — белгілі бір құбылысты сипаттайтын ақпараттар жиынтығы.
+      Мысалы: оқушылар саны, ауа райы, сүйікті пән, күн тәртібі,
+      кітап оқу нәтижесі.
     </p>
   </div>
 
-  <div class="card big">
+  <div class="info-card big">
     <h2>Дерек не үшін қажет?</h2>
     <p>
-      Дерек бізге жай ақпаратты ғана көрсетпейді.
-      Ол салыстыруға, талдауға, дәлел айтуға және дұрыс қорытынды жасауға көмектеседі.
+      Деректер бізге ақпаратты түсінуге, салыстыруға, талдауға және
+      нақты дәлелге сүйеніп қорытынды жасауға көмектеседі.
     </p>
   </div>
 </section>
@@ -47,7 +53,7 @@
   <h2>Деректердің түрлері</h2>
   <table>
     <tr>
-      <th>Дерек түрі</th>
+      <th>Түрі</th>
       <th>Түсіндірме</th>
       <th>Мысал</th>
     </tr>
@@ -58,31 +64,47 @@
     </tr>
     <tr>
       <td>Сапалық дерек</td>
-      <td>Сипаттама немесе пікір арқылы беріледі</td>
+      <td>Сипаттама немесе пікір арқылы берілетін ақпарат</td>
       <td>сүйікті пән, көңіл күй, түс</td>
     </tr>
     <tr>
       <td>Визуалды дерек</td>
-      <td>Көрнекі түрде ұсынылады</td>
+      <td>Көрнекі түрде ұсынылатын ақпарат</td>
       <td>кесте, диаграмма, график</td>
     </tr>
   </table>
 </section>
 
-<section class="research-block">
+<section class="algorithm-section">
   <h2>Деректермен жұмыс жасау алгоритмі</h2>
+
   <div class="steps-row">
-    <div>1<br><span>Дерек жина</span></div>
-    <div>2<br><span>Кесте жаса</span></div>
-    <div>3<br><span>Салыстыр</span></div>
-    <div>4<br><span>Талда</span></div>
-    <div>5<br><span>Қорытынды жаз</span></div>
+    <div class="step-box">1<span>Дерек жинау</span></div>
+    <div class="step-box">2<span>Кесте құру</span></div>
+    <div class="step-box">3<span>Диаграмма оқу</span></div>
+    <div class="step-box">4<span>Салыстыру</span></div>
+    <div class="step-box">5<span>Қорытынды жазу</span></div>
   </div>
+</section>
+
+<section class="task-card">
+  <h2>Мини-жаттығу</h2>
+  <p>Мына деректі оқы: «Сыныпта 12 оқушы математика пәнін, 8 оқушы қазақ тілін таңдады».</p>
+
+  <label>Қай пән көбірек таңдалды?</label>
+  <input id="mini1" type="text" />
+
+  <label>Айырмашылығы қанша?</label>
+  <input id="mini2" type="text" />
+
+  <button class="btn primary" onclick="checkMiniPractice()">Тексеру</button>
+  <div id="miniResult" class="result-box"></div>
 </section>
 
 <footer>
   <p>© 2026 DataLab Kids</p>
 </footer>
 
+<script src="js/app.js"></script>
 </body>
 </html>
