@@ -30,6 +30,16 @@
   </p>
 </section>
 
+<section class="student-box">
+  <h2>Оқушы туралы ақпарат</h2>
+
+  <label>Оқушының аты-жөні</label>
+  <input id="studentName" type="text" placeholder="Мысалы: Аружан Сейіт" />
+
+  <label>Сынып</label>
+  <input id="studentClass" type="text" placeholder="Мысалы: 4А" />
+</section>
+
 <section class="task-card">
   <h2>1-блок. Кестені оқу</h2>
   <p>4-сынып оқушыларының сүйікті пәндері бойынша деректер берілген.</p>
@@ -39,11 +49,26 @@
       <th>Пән</th>
       <th>Оқушы саны</th>
     </tr>
-    <tr><td>Математика</td><td>10</td></tr>
-    <tr><td>Қазақ тілі</td><td>7</td></tr>
-    <tr><td>Дүниетану</td><td>5</td></tr>
-    <tr><td>Ағылшын тілі</td><td>4</td></tr>
-    <tr><td>Көркем еңбек</td><td>3</td></tr>
+    <tr>
+      <td>Математика</td>
+      <td>10</td>
+    </tr>
+    <tr>
+      <td>Қазақ тілі</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <td>Дүниетану</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <td>Ағылшын тілі</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <td>Көркем еңбек</td>
+      <td>3</td>
+    </tr>
   </table>
 
   <label>1. Ең көп таңдалған пән қайсы?</label>
@@ -57,33 +82,53 @@
 </section>
 
 <section class="task-card">
-  <h2>2-блок. Диаграмма логикасы</h2>
-  <p>Берілген деректер бойынша ойлан.</p>
+  <h2>2-блок. Визуалды деректі түсіну</h2>
+  <p>
+    Төмендегі бағандар пәндердің қаншалықты көп таңдалғанын көрсетеді.
+    Ең ұзын баған — ең көп таңдалған пән.
+  </p>
 
   <div class="visual-bars">
-    <div><span style="width:100%">Математика — 10</span></div>
-    <div><span style="width:70%">Қазақ тілі — 7</span></div>
-    <div><span style="width:50%">Дүниетану — 5</span></div>
-    <div><span style="width:40%">Ағылшын — 4</span></div>
-    <div><span style="width:30%">Көркем еңбек — 3</span></div>
+    <div><span style="width:100%">Математика — 10 оқушы</span></div>
+    <div><span style="width:70%">Қазақ тілі — 7 оқушы</span></div>
+    <div><span style="width:50%">Дүниетану — 5 оқушы</span></div>
+    <div><span style="width:40%">Ағылшын тілі — 4 оқушы</span></div>
+    <div><span style="width:30%">Көркем еңбек — 3 оқушы</span></div>
   </div>
 
   <label>4. Диаграммада ең ұзын баған қай пәнге тиесілі?</label>
   <input id="d4" type="text" placeholder="Жауабыңды жаз..." />
 
-  <label>5. Бұл деректерден қандай қорытынды жасауға болады?</label>
+  <label>5. Осы деректерден қандай қорытынды жасауға болады?</label>
   <textarea id="d5" placeholder="Қорытынды жаз..."></textarea>
+</section>
+
+<section class="task-card">
+  <h2>3-блок. Салыстыру және талдау</h2>
+
+  <label>6. Қазақ тілі мен көркем еңбек пәндерінің айырмашылығы қанша оқушы?</label>
+  <input id="d6" type="text" placeholder="Санмен жаз..." />
+
+  <label>7. Егер ағылшын тілін тағы 2 оқушы таңдаса, жалпы неше оқушы болады?</label>
+  <input id="d7" type="text" placeholder="Санмен жаз..." />
+
+  <label>8. Қай пәндерді оқушылар көбірек таңдаған: нақты дерекпен дәлелде.</label>
+  <textarea id="d8" placeholder="Мысалы: ... себебі ... оқушы таңдаған"></textarea>
 </section>
 
 <section class="task-card final-card">
   <h2>Диагностика нәтижесін сақтау</h2>
-  <p>Жауаптарыңды тексеріп, бастапқы деңгейіңді сақта.</p>
+  <p>
+    Барлық сұраққа жауап бергеннен кейін нәтиже оқушының атымен сақталады.
+  </p>
+
   <button class="btn primary" onclick="checkDiagnostic()">Нәтижені сақтау</button>
+
   <div id="diagnosticResult" class="result-box"></div>
 </section>
 
 <footer>
-  <p>© 2026 DataLab Kids</p>
+  <p>© 2026 DataLab Kids | Бастапқы диагностика</p>
 </footer>
 
 <script src="js/app.js"></script>
