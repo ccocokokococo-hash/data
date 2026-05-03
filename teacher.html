@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="css/style.css" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+
 <body onload="loadTeacherPanel()">
 
 <header class="navbar">
@@ -26,11 +27,63 @@
   <span class="badge">Мұғалім панелі</span>
   <h1>Мұғалім кабинеті</h1>
   <p>
-    Бұл бөлім оқушының диагностика және практикалық тапсырмалар бойынша нәтижесін талдауға арналған.
+    Бұл бөлімде оқушылардың диагностика, практикалық тапсырма, жалпы нәтиже,
+    орындау уақыты, жауаптары және қателері толық талданады.
   </p>
 </section>
 
 <section class="dashboard">
+  <div class="dash-card">
+    <h3>Оқушы саны</h3>
+    <p id="classCount">0</p>
+  </div>
+
+  <div class="dash-card">
+    <h3>Орындағандар</h3>
+    <p id="finishedCount">0</p>
+  </div>
+
+  <div class="dash-card">
+    <h3>Орташа нәтиже</h3>
+    <p id="classAverage">0%</p>
+  </div>
+
+  <div class="dash-card">
+    <h3>Ең қиын сұрақ</h3>
+    <p id="hardestQuestion">—</p>
+  </div>
+</section>
+
+<section class="table-box">
+  <h2>Оқушылар тізімі</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>№</th>
+        <th>Аты-жөні</th>
+        <th>Сынып</th>
+        <th>Диагностика</th>
+        <th>Практика</th>
+        <th>Жалпы</th>
+        <th>Деңгей</th>
+        <th>Статус</th>
+        <th>Уақыты</th>
+        <th>Жауаптар</th>
+      </tr>
+    </thead>
+    <tbody id="studentsTable">
+      <!-- app.js автоматты толтырады -->
+    </tbody>
+  </table>
+</section>
+
+<section class="dashboard">
+  <div class="dash-card">
+    <h3>Таңдалған оқушы</h3>
+    <p id="teacherStudentName">—</p>
+  </div>
+
   <div class="dash-card">
     <h3>Диагностика</h3>
     <p id="teacherDiagnostic">0%</p>
@@ -45,20 +98,16 @@
     <h3>Жалпы нәтиже</h3>
     <p id="teacherTotal">0%</p>
   </div>
-
-  <div class="dash-card">
-    <h3>Деңгей</h3>
-    <p id="teacherLevel">—</p>
-  </div>
 </section>
 
 <section class="chart-section">
-  <h2>Мұғалімге арналған дағды диаграммасы</h2>
+  <h2>Таңдалған оқушының дағды диаграммасы</h2>
   <canvas id="teacherChart"></canvas>
 </section>
 
 <section class="table-box">
   <h2>Дағдылар бойынша бақылау</h2>
+
   <table>
     <tr>
       <th>Дағды</th>
@@ -88,6 +137,30 @@
   </table>
 </section>
 
+<section class="table-box">
+  <h2>Оқушының тапсырма жауаптары</h2>
+  <div id="answersBox">
+    Оқушыны кестеден таңдаңыз. «Көру» батырмасын басқанда осы жерде жауаптары шығады.
+  </div>
+</section>
+
+<section class="table-box">
+  <h2>ТОП нәтиже</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Орын</th>
+        <th>Оқушы</th>
+        <th>Сынып</th>
+        <th>Жалпы нәтиже</th>
+      </tr>
+    </thead>
+    <tbody id="rankingTable">
+      <!-- app.js автоматты толтырады -->
+    </tbody>
+  </table>
+</section>
+
 <section class="recommend">
   <h2>Әдістемелік ұсыныс</h2>
   <p id="teacherAdvice">
@@ -97,14 +170,17 @@
 
 <section class="danger-zone">
   <h2>Нәтижені тазарту</h2>
-  <p>Жаңа оқушы немесе жаңа зерттеу бастау үшін сақталған нәтижелерді өшіруге болады.</p>
+  <p>
+    Жаңа зерттеу немесе жаңа сыныппен жұмыс бастау үшін сақталған нәтижелерді өшіруге болады.
+  </p>
   <button class="btn danger" onclick="clearAllResults()">Нәтижелерді тазарту</button>
 </section>
 
 <footer>
-  <p>© 2026 DataLab Kids</p>
+  <p>© 2026 DataLab Kids | Мұғалім аналитика жүйесі</p>
 </footer>
 
 <script src="js/app.js"></script>
+
 </body>
 </html>
