@@ -1,265 +1,522 @@
-function normalize(value) {
-  return String(value || "").toLowerCase().trim();
-}
-
-function containsAny(value, answers) {
-  return answers.some(answer => value.includes(answer));
-}
 
 function getStudents() {
   return JSON.parse(localStorage.getItem("students")) || [];
 }
-
-function saveStudents(students) {
-  localStorage.setItem("students", JSON.stringify(students));
+function saveStudents(data) {
+  localStorage.setItem("students", JSON.stringify(data));
 }
-
-function saveStudentResult(name, studentClass, data) {
-  let students = getStudents();
-
-  const existingIndex = students.findIndex(
-    student => student.name.toLowerCase() === name.toLowerCase()
-  );
-
-  const oldStudent = existingIndex >= 0 ? students[existingIndex] : {};
-
-  const updatedStudent = {
-    ...oldStudent,
-    name: name,
-    class: studentClass || oldStudent.class || "4-сынып",
-    diagnostic: data.diagnostic ?? oldStudent.diagnostic ?? 0,
-    task: data.task ?? oldStudent.task ?? 0,
-    understand: data.understand ?? oldStudent.understand ?? 0,
-    compare: data.compare ?? oldStudent.compare ?? 0,
-    analyze: data.analyze ?? oldStudent.analyze ?? 0,
-    conclusion: data.conclusion ?? oldStudent.conclusion ?? 0
-  };
-
-  if (existingIndex >= 0) {
-    students[existingIndex] = updatedStudent;
-  } else {
-    students.push(updatedStudent);
-  }
-
-  saveStudents(students);
-  localStorage.setItem("currentStudent", name);
+function normalize(value) {
+  return String(value || "")
+    .toLowerCase()
+    .trim()
+    .replaceAll("ә", "а")
+    .replaceAll("і", "и")
+    .replaceAll("ң", "н")
+    .replaceAll("ғ", "г")
+    .replaceAll("ү", "у")
+    .replaceAll("ұ", "у")
+    .replaceAll("қ", "к")
+    .replaceAll("ө", "о")
+    .replaceAll("һ", "х");
 }
-
-function showResultBox(id, percent, score, total) {
-  const box = document.getElementById(id);
-  if (!box) return;
-
-  let className = "result-box low";
-  let title = "Бастапқы деңгей";
-  let text = "Деректерді қайта қарап, AI-көмекшінің бағыттаушы сұрақтарын қолданып көр.";
-
-  if (percent >= 85) {
-    className = "result-box good";
-    title = "Жоғары деңгей";
-    text = "Өте жақсы! Сен деректерді түсініп, салыстырып, нақты қорытынды жасай алдың.";
-  } else if (percent >= 60) {
-    className = "result-box mid";
-    title = "Орта деңгей";
-    text = "Жақсы! Негізгі дағдылар қалыптасқан, бірақ қорытындыны дерекпен дәлелдеуді күшейту керек.";
-  }
-
-  box.style.display = "block";
-  box.className = className;
-  box.innerHTML = `
-    <h3>${title}</h3>
-    <p>Нәтиже: <b>${percent}%</b></p>
-    <p>Дұрыс орындалғаны: <b>${score}/${total}</b></p>
-    <p>${text}</p>
-    <a class="btn secondary" href="progress.html">Прогрессті көру</a>
-  `;
-}
-
-function checkDiagnostic() {
-  const name = document.getElementById("studentName").value.trim();
-  const studentClass = document.getElementById("studentClass").value.trim();
-
-  if (name.length < 2) {
-    alert("Оқушының аты-жөнін жазыңыз.");
-    return;
-  }
-
-  let score = 0;
-  const total = 8;
-
-  const d1 = normalize(document.getElementById("d1").value);
-  const d2 = normalize(document.getElementById("d2").value);
-  const d3 = normalize(document.getElementById("d3").value);
-  const d4 = normalize(document.getElementById("d4").value);
-  const d5 = normalize(document.getElementById("d5").value);
-  const d6 = normalize(document.getElementById("d6").value);
-  const d7 = normalize(document.getElementById("d7").value);
-  const d8 = normalize(document.getElementById("d8").value);
-
-  const d1Correct = containsAny(d1, ["математика"]);
-  const d2Correct = containsAny(d2, ["көркем еңбек", "коркем еңбек"]);
-  const d3Correct = containsAny(d3, ["5"]);
-  const d4Correct = containsAny(d4, ["математика"]);
-  const d5Correct = d5.length >= 25;
-  const d6Correct = containsAny(d6, ["4"]);
-  const d7Correct = containsAny(d7, ["6"]);
-  const d8Correct =
-    d8.length >= 25 &&
-    (
-      containsAny(d8, ["математика"]) ||
-      containsAny(d8, ["қазақ", "казак"])
-    );
-
-  if (d1Correct) score++;
-  if (d2Correct) score++;
-  if (d3Correct) score++;
-  if (d4Correct) score++;
-  if (d5Correct) score++;
-  if (d6Correct) score++;
-  if (d7Correct) score++;
-  if (d8Correct) score++;
-
-  const percent = Math.round((score / total) * 100);
-
-  const understand = Math.round(((d1Correct + d2Correct + d4Correct) / 3) * 100);
-  const compare = Math.round(((d3Correct + d6Correct + d7Correct) / 3) * 100);
-  const analyze = d8Correct ? 100 : 0;
-  const conclusion = d5Correct ? 100 : 0;
-
-  saveStudentResult(name, studentClass, {
-    diagnostic: percent,
-    understand,
-    compare,
-    analyze,
-    conclusion
+function containsAnswer(userValue, correctList) {
+  const user = normalize(userValue);
+  return correctList.some(answer => {
+    const correct = normalize(answer);
+    return user.includes(correct);
   });
-
-  showResultBox("diagnosticResult", percent, score, total);
 }
-
-function checkTasks() {
-  const currentName = localStorage.getItem("currentStudent");
-
-  if (!currentName) {
-    alert("Алдымен диагностикадан өтіп, оқушы аты-жөнін енгізіңіз.");
-    return;
-  }
-
-  let students = getStudents();
-  const student = students.find(
-    item => item.name.toLowerCase() === currentName.toLowerCase()
-  );
-
-  if (!student) {
-    alert("Оқушы табылмады. Алдымен диагностикадан өтіңіз.");
-    return;
-  }
-
-  let score = 0;
-  const total = 22;
-
-  const values = {};
-  for (let i = 1; i <= 22; i++) {
-    const el = document.getElementById("t" + i);
-    values["t" + i] = el ? normalize(el.value) : "";
-  }
-
-  const correct = {
-    t1: containsAny(values.t1, ["бейсенбі", "бейсенби"]),
-    t2: containsAny(values.t2, ["сәрсенбі", "сарсенби"]),
-    t3: containsAny(values.t3, ["19.6", "19,6"]),
-    t4: values.t4.length >= 25,
-
-    t5: containsAny(values.t5, ["ұйқы", "уйқы"]),
-    t6: containsAny(values.t6, ["2"]),
-    t7: values.t7.length >= 20,
-    t8: values.t8.length >= 25,
-
-    t9: containsAny(values.t9, ["нұрасыл", "нурасыл"]),
-    t10: containsAny(values.t10, ["дана"]),
-    t11: containsAny(values.t11, ["155"]),
-    t12: containsAny(values.t12, ["31"]),
-    t13: values.t13.length >= 25,
-
-    t14: containsAny(values.t14, ["сызғыш", "сызгыш"]),
-    t15: containsAny(values.t15, ["өшіргіш", "оширгиш"]),
-    t16: containsAny(values.t16, ["280"]),
-    t17: values.t17.length >= 20,
-
-    t18: containsAny(values.t18, ["қате", "кате"]),
-    t19: values.t19.length >= 25 && containsAny(values.t19, ["ұйқы", "уйқы"]),
-
-    t20: values.t20.length >= 5,
-    t21: values.t21.length >= 20,
-    t22: values.t22.length >= 25
-  };
-
-  Object.values(correct).forEach(value => {
-    if (value) score++;
+function getNow() {
+  const now = new Date();
+  return now.toLocaleString("kk-KZ", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit"
   });
-
-  const percent = Math.round((score / total) * 100);
-
-  const understandTask = Math.round(
-    ((correct.t1 + correct.t2 + correct.t5 + correct.t9) / 4) * 100
-  );
-
-  const compareTask = Math.round(
-    ((correct.t6 + correct.t10 + correct.t14 + correct.t15) / 4) * 100
-  );
-
-  const analyzeTask = Math.round(
-    ((correct.t3 + correct.t11 + correct.t12 + correct.t16 + correct.t18) / 5) * 100
-  );
-
-  const conclusionTask = Math.round(
-    ((correct.t4 + correct.t7 + correct.t8 + correct.t13 + correct.t17 + correct.t19 + correct.t22) / 7) * 100
-  );
-
-  student.task = percent;
-  student.understand = Math.round(((student.understand || 0) + understandTask) / 2);
-  student.compare = Math.round(((student.compare || 0) + compareTask) / 2);
-  student.analyze = Math.round(((student.analyze || 0) + analyzeTask) / 2);
-  student.conclusion = Math.round(((student.conclusion || 0) + conclusionTask) / 2);
-
-  saveStudents(students);
-
-  showResultBox("taskResult", percent, score, total);
 }
-
-function getCurrentStudent() {
-  const currentName = localStorage.getItem("currentStudent");
-  const students = getStudents();
-
-  if (!currentName) return null;
-
-  return students.find(
-    student => student.name.toLowerCase() === currentName.toLowerCase()
-  );
-}
-
 function getLevel(percent) {
   if (percent >= 85) return "Жоғары деңгей";
   if (percent >= 70) return "Жақсы деңгей";
   if (percent >= 50) return "Орта деңгей";
   return "Қосымша жұмыс қажет";
 }
-
+function getShortLevel(percent) {
+  if (percent >= 85) return "Жоғары";
+  if (percent >= 70) return "Жақсы";
+  if (percent >= 50) return "Орта";
+  return "Төмен";
+}
 function getAdvice(percent) {
   if (percent >= 85) {
-    return "Оқушы деректерді жақсы түсінеді, салыстырады және қорытындыны дәлелдей алады. Күрделірек зерттеу тапсырмаларын беруге болады.";
+    return "Оқушы деректерді жақсы түсінеді, салыстырады, талдайды және қорытындыны дәлелдей алады. Оған күрделірек зерттеу тапсырмаларын беруге болады.";
   }
-
   if (percent >= 70) {
-    return "Оқушы негізгі дағдыларды меңгерген. Қорытындыны нақты дерекпен дәлелдеуді күшейту ұсынылады.";
+    return "Оқушы негізгі дағдыларды меңгерген. Бірақ қорытындыны нақты дерекпен дәлелдеуді күшейту ұсынылады.";
   }
-
   if (percent >= 50) {
-    return "Оқушыға салыстыру және талдау тапсырмаларын көбірек беру қажет.";
+    return "Оқушыда бастапқы түсіну бар, бірақ салыстыру және талдау тапсырмаларын көбірек орындау қажет.";
   }
-
   return "Оқушыға кестені оқу, негізгі көрсеткішті табу және қысқа қорытынды жазу бойынша қосымша қолдау қажет.";
 }
+function getCurrentStudentName() {
+  return localStorage.getItem("currentStudent") || "";
+}
+function setCurrentStudent(name) {
+  localStorage.setItem("currentStudent", name);
+}
+function findStudentByName(name) {
+  const students = getStudents();
+  return students.find(s => normalize(s.name) === normalize(name));
+}
+function calculateTotal(diagnostic, task) {
+  const d = Number(diagnostic) || 0;
+  const t = Number(task) || 0;
+  if (d === 0 && t === 0) return 0;
+  if (d === 0) return t;
+  if (t === 0) return d;
+  return Math.round((d + t) / 2);
+}
+function averageNumbers(values) {
+  const valid = values.filter(v => typeof v === "number" && !isNaN(v));
+  if (valid.length === 0) return 0;
+  const sum = valid.reduce((a, b) => a + b, 0);
+  return Math.round(sum / valid.length);
+}
+// =====================================================
+// 2. НӘТИЖЕ БЛОГЫН КӨРСЕТУ
+// =====================================================
+function showResultBox(id, percent, score, total, titleText) {
+  const box = document.getElementById(id);
+  if (!box) return;
+  let className = "result-box low";
+  let title = titleText || "Нәтиже";
+  let level = getLevel(percent);
+  let text = getAdvice(percent);
+  if (percent >= 85) {
+    className = "result-box good";
+  } else if (percent >= 60) {
+    className = "result-box mid";
+  }
+  box.style.display = "block";
+  box.className = className;
+  box.innerHTML = `
+    <h3>${title}</h3>
+    <p><b>Деңгей:</b> ${level}</p>
+    <p><b>Нәтиже:</b> ${percent}%</p>
+    <p><b>Дұрыс орындалғаны:</b> ${score}/${total}</p>
+    <p>${text}</p>
+    <a class="btn secondary" href="progress.html">Прогрессті көру</a>
+  `;
+}
+// =====================================================
+// 3. ОҚУШЫНЫ ТІРКЕУ ЖӘНЕ ЖАҢАРТУ
+// =====================================================
+function registerStudent(name, studentClass) {
+  let students = getStudents();
+  const existingIndex = students.findIndex(
+    s => normalize(s.name) === normalize(name)
+  );
+  if (existingIndex === -1) {
+    students.push({
+      id: Date.now(),
+      name: name,
+      class: studentClass || "4-сынып",
+      diagnostic: 0,
+      task: 0,
+      total: 0,
+      level: "Төмен",
+      finished: false,
+      registeredAt: getNow(),
+      diagnosticTime: "",
+      taskTime: "",
+      diagnosticAnswers: {},
+      answers: {},
+      skills: {
+        understand: 0,
+        compare: 0,
+        analyze: 0,
+        conclusion: 0
+      },
+      mistakes: 0,
+      weakSkill: "Әлі анықталмады"
+    });
+  } else {
+    students[existingIndex].class = studentClass || students[existingIndex].class;
+  }
+  saveStudents(students);
+  setCurrentStudent(name);
+}
+function updateStudent(name, updateData) {
+  let students = getStudents();
+  const index = students.findIndex(
+    s => normalize(s.name) === normalize(name)
+  );
+  if (index === -1) return;
+  students[index] = {
+    ...students[index],
+    ...updateData
+  };
+  saveStudents(students);
+}
+function getCurrentStudent() {
+  const name = getCurrentStudentName();
+  if (!name) return null;
+  return findStudentByName(name);
+}
+// =====================================================
+// 4. ДИАГНОСТИКА ЖАУАПТАРЫ
+// =====================================================
+const diagnosticQuestions = {
+  d1: {
+    question: "Ең көп таңдалған пән қайсы?",
+    correct: ["математика"],
+    skill: "understand"
+  },
+  d2: {
+    question: "Ең аз таңдалған пән қайсы?",
+    correct: ["көркем еңбек", "коркем еңбек"],
+    skill: "understand"
+  },
+  d3: {
+    question: "Математика мен дүниетану пәндерінің айырмашылығы қанша оқушы?",
+    correct: ["5"],
+    skill: "compare"
+  },
+  d4: {
+    question: "Диаграммада ең ұзын баған қай пәнге тиесілі?",
+    correct: ["математика"],
+    skill: "analyze"
+  },
+  d5: {
+    question: "Осы деректерден қандай қорытынды жасауға болады?",
+    correct: [],
+    skill: "conclusion",
+    minLength: 25
+  },
+  d6: {
+    question: "Қазақ тілі мен көркем еңбек пәндерінің айырмашылығы қанша оқушы?",
+    correct: ["4"],
+    skill: "compare"
+  },
+  d7: {
+    question: "Егер ағылшын тілін тағы 2 оқушы таңдаса, жалпы неше оқушы болады?",
+    correct: ["6"],
+    skill: "analyze"
+  },
+  d8: {
+    question: "Қай пәндерді оқушылар көбірек таңдаған: нақты дерекпен дәлелде.",
+    correct: [],
+    skill: "conclusion",
+    minLength: 30
+  }
+};
+// =====================================================
+// 5. ДИАГНОСТИКАНЫ ТЕКСЕРУ
+// =====================================================
+function checkDiagnostic() {
+  const name = document.getElementById("studentName")?.value.trim();
+  const studentClass = document.getElementById("studentClass")?.value.trim();
+  if (!name || name.length < 2) {
+    alert("Оқушының аты-жөнін жазыңыз.");
+    return;
+  }
+  registerStudent(name, studentClass);
+  let score = 0;
+  const total = Object.keys(diagnosticQuestions).length;
+  let diagnosticAnswers = {};
+  let skillScore = {
+    understand: { correct: 0, total: 0 },
+    compare: { correct: 0, total: 0 },
+    analyze: { correct: 0, total: 0 },
+    conclusion: { correct: 0, total: 0 }
+  };
+  Object.entries(diagnosticQuestions).forEach(([key, item]) => {
+    const userValue = document.getElementById(key)?.value || "";
+    let isCorrect = false;
+    if (item.minLength) {
+      isCorrect = userValue.trim().length >= item.minLength;
+    } else {
+      isCorrect = containsAnswer(userValue, item.correct);
+    }
+    if (isCorrect) score++;
+    skillScore[item.skill].total++;
+    if (isCorrect) skillScore[item.skill].correct++;
+    diagnosticAnswers[key] = {
+      question: item.question,
+      user: userValue,
+      correct: item.correct.length ? item.correct.join(" / ") : "Дәлелді, толық жауап",
+      status: isCorrect,
+      skill: item.skill
+    };
+  });
+  const diagnosticPercent = Math.round((score / total) * 100);
+  const diagnosticSkills = {
+    understand: Math.round((skillScore.understand.correct / skillScore.understand.total) * 100),
+    compare: Math.round((skillScore.compare.correct / skillScore.compare.total) * 100),
+    analyze: Math.round((skillScore.analyze.correct / skillScore.analyze.total) * 100),
+    conclusion: Math.round((skillScore.conclusion.correct / skillScore.conclusion.total) * 100)
+  };
+  const oldStudent = findStudentByName(name);
+  const combinedSkills = {
+    understand: averageNumbers([diagnosticSkills.understand, oldStudent?.skills?.understand || 0]),
+    compare: averageNumbers([diagnosticSkills.compare, oldStudent?.skills?.compare || 0]),
+    analyze: averageNumbers([diagnosticSkills.analyze, oldStudent?.skills?.analyze || 0]),
+    conclusion: averageNumbers([diagnosticSkills.conclusion, oldStudent?.skills?.conclusion || 0])
+  };
+  const totalResult = calculateTotal(diagnosticPercent, oldStudent?.task || 0);
+  updateStudent(name, {
+    diagnostic: diagnosticPercent,
+    total: totalResult,
+    level: getShortLevel(totalResult),
+    diagnosticTime: getNow(),
+    diagnosticAnswers: diagnosticAnswers,
+    skills: combinedSkills,
+    weakSkill: findWeakSkill(combinedSkills)
+  });
+  showResultBox(
+    "diagnosticResult",
+    diagnosticPercent,
+    score,
+    total,
+    "Диагностика нәтижесі"
+  );
+}
+// =====================================================
+// 6. ПРАКТИКАЛЫҚ ТАПСЫРМАЛАР ЖАУАПТАРЫ
+// =====================================================
+const taskQuestions = {
+  t1: {
+    question: "Ең жылы күн қай күн?",
+    correct: ["бейсенбі", "бейсенби"],
+    skill: "understand"
+  },
+  t2: {
+    question: "Ең салқын күн қай күн?",
+    correct: ["сәрсенбі", "сарсенби"],
+    skill: "understand"
+  },
+  t3: {
+    question: "Орташа температураны тап.",
+    correct: ["19.6", "19,6"],
+    skill: "analyze"
+  },
+  t4: {
+    question: "Апта бойынша қандай қорытынды жасауға болады?",
+    correct: [],
+    skill: "conclusion",
+    minLength: 25
+  },
+  t5: {
+    question: "Ең көп уақыт неге жұмсалады?",
+    correct: ["ұйқы", "уйкы", "уйқы"],
+    skill: "understand"
+  },
+  t6: {
+    question: "Гаджет уақыты үй тапсырмасынан қанша сағат көп?",
+    correct: ["2"],
+    skill: "compare"
+  },
+  t7: {
+    question: "Спорт уақыты жеткілікті ме? Неге?",
+    correct: [],
+    skill: "conclusion",
+    minLength: 20
+  },
+  t8: {
+    question: "Күн тәртібін жақсарту бойынша ұсыныс жаз.",
+    correct: [],
+    skill: "conclusion",
+    minLength: 25
+  },
+  t9: {
+    question: "Ең көп кітап оқыған оқушы кім?",
+    correct: ["нұрасыл", "нурасыл"],
+    skill: "understand"
+  },
+   t10: {
+    question: "Ең аз кітап оқыған оқушы кім?",
+    correct: ["дана"],
+    skill: "understand"
+  },
+  t11: {
+    question: "Жалпы неше бет оқылды?",
+    correct: ["155"],
+    skill: "analyze"
+  },
+  t12: {
+    question: "Орташа көрсеткіш қанша бет?",
+    correct: ["31"],
+    skill: "analyze"
+  },
+  t13: {
+    question: "Бұл деректен қандай қорытынды жасауға болады?",
+    correct: [],
+    skill: "conclusion",
+    minLength: 25
+  },
+  t14: {
+    question: "Ең қымбат зат қайсы?",
+    correct: ["сызғыш", "сызгыш"],
+    skill: "compare"
+  },
+  t15: {
+    question: "Ең арзан зат қайсы?",
+    correct: ["өшіргіш", "оширгиш"],
+    skill: "compare"
+  },
+  t16: {
+    question: "Дәптер, қалам және өшіргіш бірге қанша тұрады?",
+    correct: ["280"],
+    skill: "analyze"
+  },
+  t17: {
+    question: "500 теңгеге қандай заттар алуға болады?",
+    correct: [],
+    skill: "conclusion",
+    minLength: 20
+  },
+  t18: {
+    question: "Бұл қорытынды дұрыс па?",
+    correct: ["қате", "кате"],
+    skill: "analyze"
+  },
+  t19: {
+    question: "Дұрыс қорытындыны жаз.",
+    correct: [],
+    skill: "conclusion",
+    minLength: 25
+  },
+  t20: {
+    question: "Зерттеу тақырыбың қандай?",
+    correct: [],
+    skill: "conclusion",
+    minLength: 5
+  },
+  t21: {
+    question: "Жинаған деректеріңді жаз.",
+    correct: [],
+    skill: "conclusion",
+    minLength: 20
+  },
+  t22: {
+    question: "Осы дерек бойынша қандай қорытынды жасадың?",
+    correct: [],
+    skill: "conclusion",
+    minLength: 25
+  }
+};
 
+// =====================================================
+// 7. ПРАКТИКАЛЫҚ ТАПСЫРМАЛАРДЫ ТЕКСЕРУ
+// =====================================================
+function checkTasks() {
+  const currentStudent = getCurrentStudent();
+
+  if (!currentStudent) {
+    alert("Алдымен диагностикадан өтіп, оқушының аты-жөнін енгізіңіз.");
+    return;
+  }
+
+  let score = 0;
+  const total = Object.keys(taskQuestions).length;
+
+  let answers = {};
+  let skillScore = {
+    understand: { correct: 0, total: 0 },
+    compare: { correct: 0, total: 0 },
+    analyze: { correct: 0, total: 0 },
+    conclusion: { correct: 0, total: 0 }
+  };
+
+  Object.entries(taskQuestions).forEach(([key, item]) => {
+    const userValue = document.getElementById(key)?.value || "";
+    let isCorrect = false;
+
+    if (item.minLength) {
+      isCorrect = userValue.trim().length >= item.minLength;
+    } else {
+      isCorrect = containsAnswer(userValue, item.correct);
+    }
+
+    if (isCorrect) score++;
+
+    skillScore[item.skill].total++;
+    if (isCorrect) skillScore[item.skill].correct++;
+
+    answers[key] = {
+      question: item.question,
+      user: userValue,
+      correct: item.correct.length ? item.correct.join(" / ") : "Толық, дәлелді жауап",
+      status: isCorrect,
+      skill: item.skill
+    };
+  });
+
+  const taskPercent = Math.round((score / total) * 100);
+
+  const taskSkills = {
+    understand: Math.round((skillScore.understand.correct / skillScore.understand.total) * 100),
+    compare: Math.round((skillScore.compare.correct / skillScore.compare.total) * 100),
+    analyze: Math.round((skillScore.analyze.correct / skillScore.analyze.total) * 100),
+    conclusion: Math.round((skillScore.conclusion.correct / skillScore.conclusion.total) * 100)
+  };
+
+  const combinedSkills = {
+    understand: averageNumbers([currentStudent.skills?.understand || 0, taskSkills.understand]),
+    compare: averageNumbers([currentStudent.skills?.compare || 0, taskSkills.compare]),
+    analyze: averageNumbers([currentStudent.skills?.analyze || 0, taskSkills.analyze]),
+    conclusion: averageNumbers([currentStudent.skills?.conclusion || 0, taskSkills.conclusion])
+  };
+
+  const totalResult = calculateTotal(currentStudent.diagnostic, taskPercent);
+  const mistakeCount = Object.values(answers).filter(item => !item.status).length;
+
+  updateStudent(currentStudent.name, {
+    task: taskPercent,
+    total: totalResult,
+    level: getShortLevel(totalResult),
+    finished: true,
+    taskTime: getNow(),
+    answers: answers,
+    skills: combinedSkills,
+    mistakes: mistakeCount,
+    weakSkill: findWeakSkill(combinedSkills)
+  });
+
+  showResultBox(
+    "taskResult",
+    taskPercent,
+    score,
+    total,
+    "Практикалық тапсырма нәтижесі"
+  );
+}
+
+// =====================================================
+// 8. ЕҢ ӘЛСІЗ ДАҒДЫНЫ АНЫҚТАУ
+// =====================================================
+function findWeakSkill(skills) {
+  if (!skills) return "Әлі анықталмады";
+
+  const labels = {
+    understand: "Деректерді түсіну",
+    compare: "Салыстыру",
+    analyze: "Талдау",
+    conclusion: "Қорытынды жасау"
+  };
+
+  const entries = Object.entries(skills);
+  if (entries.length === 0) return "Әлі анықталмады";
+
+  const weakest = entries.sort((a, b) => a[1] - b[1])[0];
+  return labels[weakest[0]] || "Әлі анықталмады";
+}
+
+// =====================================================
+// 9. ПРОГРЕСС БЕТІН ЖҮКТЕУ
+// =====================================================
 function loadProgress() {
   const student = getCurrentStudent();
 
@@ -269,54 +526,40 @@ function loadProgress() {
     return;
   }
 
-  const diagnostic = student.diagnostic || 0;
-  const task = student.task || 0;
-  const total = Math.round((diagnostic + task) / 2);
+  const diagnostic = Number(student.diagnostic) || 0;
+  const task = Number(student.task) || 0;
+  const total = calculateTotal(diagnostic, task);
 
-  const studentInfo = document.getElementById("studentInfo");
-  if (studentInfo) {
-    studentInfo.innerText = `${student.name} | ${student.class || "4-сынып"}`;
-  }
-
-  document.getElementById("diagnosticText").innerText = diagnostic + "%";
-  document.getElementById("taskText").innerText = task + "%";
-  document.getElementById("totalText").innerText = total + "%";
-
-  document.getElementById("diagnosticBar").style.width = diagnostic + "%";
-  document.getElementById("taskBar").style.width = task + "%";
-
-  const totalBar = document.getElementById("totalBar");
-  if (totalBar) totalBar.style.width = total + "%";
-
-  const levelText = document.getElementById("levelText");
-  if (levelText) levelText.innerText = getLevel(total);
-
-  const adviceText = document.getElementById("adviceText");
-  if (adviceText) adviceText.innerText = getAdvice(total);
-
-  const fields = {
-    skillUnderstandPercent: student.understand || 0,
-    skillComparePercent: student.compare || 0,
-    skillAnalyzePercent: student.analyze || 0,
-    skillConclusionPercent: student.conclusion || 0
+  const setText = (id, value) => {
+    const el = document.getElementById(id);
+    if (el) el.innerText = value;
   };
 
-  Object.entries(fields).forEach(([id, value]) => {
+  const setBar = (id, value) => {
     const el = document.getElementById(id);
-    if (el) el.innerText = value + "%";
-  });
-
-  const levels = {
-    skillUnderstandLevel: student.understand || 0,
-    skillCompareLevel: student.compare || 0,
-    skillAnalyzeLevel: student.analyze || 0,
-    skillConclusionLevel: student.conclusion || 0
+    if (el) el.style.width = value + "%";
   };
 
-  Object.entries(levels).forEach(([id, value]) => {
-    const el = document.getElementById(id);
-    if (el) el.innerText = getLevel(value);
-  });
+  setText("studentInfo", `${student.name} | ${student.class || "4-сынып"}`);
+  setText("diagnosticText", diagnostic + "%");
+  setText("taskText", task + "%");
+  setText("totalText", total + "%");
+  setText("levelText", getLevel(total));
+  setText("adviceText", getAdvice(total));
+
+  setBar("diagnosticBar", diagnostic);
+  setBar("taskBar", task);
+  setBar("totalBar", total);
+
+  setText("skillUnderstandPercent", (student.skills?.understand || 0) + "%");
+  setText("skillComparePercent", (student.skills?.compare || 0) + "%");
+  setText("skillAnalyzePercent", (student.skills?.analyze || 0) + "%");
+  setText("skillConclusionPercent", (student.skills?.conclusion || 0) + "%");
+
+  setText("skillUnderstandLevel", getLevel(student.skills?.understand || 0));
+  setText("skillCompareLevel", getLevel(student.skills?.compare || 0));
+  setText("skillAnalyzeLevel", getLevel(student.skills?.analyze || 0));
+  setText("skillConclusionLevel", getLevel(student.skills?.conclusion || 0));
 
   const ctx = document.getElementById("skillsChart");
   if (ctx && window.Chart) {
@@ -327,10 +570,10 @@ function loadProgress() {
         datasets: [{
           label: "Дағды деңгейі (%)",
           data: [
-            student.understand || 0,
-            student.compare || 0,
-            student.analyze || 0,
-            student.conclusion || 0
+            student.skills?.understand || 0,
+            student.skills?.compare || 0,
+            student.skills?.analyze || 0,
+            student.skills?.conclusion || 0
           ],
           backgroundColor: ["#2563eb", "#22c55e", "#7c3aed", "#f59e0b"],
           borderRadius: 12
@@ -352,98 +595,308 @@ function loadProgress() {
   }
 }
 
+// =====================================================
+// 10. МҰҒАЛІМ ПАНЕЛІН ЖҮКТЕУ
+// =====================================================
 function loadTeacherPanel() {
   const students = getStudents();
+  const current = getCurrentStudent() || students[0];
 
-  const table = document.getElementById("studentsTable");
+  renderClassStats(students);
+  renderStudentsTable(students);
+  renderRanking(students);
 
-  if (table) {
-    table.innerHTML = "";
-
-    students.forEach(student => {
-      const diagnostic = student.diagnostic || 0;
-      const task = student.task || 0;
-      const total = Math.round((diagnostic + task) / 2);
-
-      const row = `
-        <tr>
-          <td>${student.name}</td>
-          <td>${student.class || "4-сынып"}</td>
-          <td>${diagnostic}%</td>
-          <td>${task}%</td>
-          <td><b>${total}%</b></td>
-          <td>${getLevel(total)}</td>
-        </tr>
-      `;
-
-      table.innerHTML += row;
-    });
+  if (current) {
+    setCurrentStudent(current.name);
+    renderSelectedStudent(current);
+    renderTeacherChart(current);
   }
+}
 
-  const current = getCurrentStudent();
+// =====================================================
+// 11. СЫНЫП СТАТИСТИКАСЫ
+// =====================================================
+function renderClassStats(students) {
+  const totalStudents = students.length;
+  const finishedStudents = students.filter(s => s.finished).length;
 
-  if (!current) return;
-
-  const diagnostic = current.diagnostic || 0;
-  const task = current.task || 0;
-  const total = Math.round((diagnostic + task) / 2);
+  const average = totalStudents
+    ? Math.round(students.reduce((sum, s) => sum + (Number(s.total) || 0), 0) / totalStudents)
+    : 0;
 
   const setText = (id, value) => {
     const el = document.getElementById(id);
     if (el) el.innerText = value;
   };
 
-  setText("teacherStudentName", current.name);
-  setText("teacherDiagnostic", diagnostic + "%");
-  setText("teacherTask", task + "%");
-  setText("teacherTotal", total + "%");
-  setText("teacherLevel", getLevel(total));
-  setText("teacherAdvice", getAdvice(total));
-
-  setText("teacherUnderstand", (current.understand || 0) + "%");
-  setText("teacherCompare", (current.compare || 0) + "%");
-  setText("teacherAnalyze", (current.analyze || 0) + "%");
-  setText("teacherConclusion", (current.conclusion || 0) + "%");
-
-  setText("teacherUnderstandNote", getLevel(current.understand || 0));
-  setText("teacherCompareNote", getLevel(current.compare || 0));
-  setText("teacherAnalyzeNote", getLevel(current.analyze || 0));
-  setText("teacherConclusionNote", getLevel(current.conclusion || 0));
-
-  const ctx = document.getElementById("teacherChart");
-  if (ctx && window.Chart) {
-    new Chart(ctx, {
-      type: "radar",
-      data: {
-        labels: ["Түсіну", "Салыстыру", "Талдау", "Қорытынды"],
-        datasets: [{
-          label: current.name,
-          data: [
-            current.understand || 0,
-            current.compare || 0,
-            current.analyze || 0,
-            current.conclusion || 0
-          ],
-          backgroundColor: "rgba(37, 99, 235, 0.18)",
-          borderColor: "#2563eb",
-          pointBackgroundColor: "#2563eb"
-        }]
-      },
-      options: {
-        scales: {
-          r: {
-            beginAtZero: true,
-            max: 100
-          }
-        }
-      }
-    });
-  }
+  setText("classCount", totalStudents);
+  setText("finishedCount", finishedStudents);
+  setText("classAverage", average + "%");
+  setText("hardestQuestion", hardestQuestion());
 }
 
+// =====================================================
+// 12. ОҚУШЫЛАР КЕСТЕСІ
+// =====================================================
+function renderStudentsTable(students) {
+  const table = document.getElementById("studentsTable");
+  if (!table) return;
+
+  table.innerHTML = "";
+
+  if (students.length === 0) {
+    table.innerHTML = `
+      <tr>
+        <td colspan="10">Әзірге оқушы тіркелмеген.</td>
+      </tr>
+    `;
+    return;
+  }
+
+  students.forEach((student, index) => {
+    const total = calculateTotal(student.diagnostic, student.task);
+    const status = student.finished ? "✔ Дайын" : "⌛ Орындауда";
+
+    table.innerHTML += `
+      <tr>
+        <td>${index + 1}</td>
+        <td>${student.name}</td>
+        <td>${student.class || "4-сынып"}</td>
+        <td>${student.diagnostic || 0}%</td>
+        <td>${student.task || 0}%</td>
+        <td><b>${total}%</b></td>
+        <td>${getShortLevel(total)}</td>
+        <td>${status}</td>
+        <td>${student.taskTime || student.diagnosticTime || "-"}</td>
+        <td>
+          <button class="small-btn" onclick="selectStudent('${student.name}')">Таңдау</button>
+          <button class="small-btn" onclick="showAnswers('${student.name}')">Көру</button>
+        </td>
+      </tr>
+    `;
+  });
+}
+
+// =====================================================
+// 13. ТАҢДАЛҒАН ОҚУШЫ
+// =====================================================
+function selectStudent(name) {
+  setCurrentStudent(name);
+  const student = findStudentByName(name);
+  if (!student) return;
+
+  renderSelectedStudent(student);
+  renderTeacherChart(student);
+  showAnswers(name);
+}
+
+function renderSelectedStudent(student) {
+  const total = calculateTotal(student.diagnostic, student.task);
+
+  const setText = (id, value) => {
+    const el = document.getElementById(id);
+    if (el) el.innerText = value;
+  };
+
+  setText("teacherStudentName", student.name);
+  setText("teacherDiagnostic", (student.diagnostic || 0) + "%");
+  setText("teacherTask", (student.task || 0) + "%");
+  setText("teacherTotal", total + "%");
+  setText("teacherLevel", getLevel(total));
+
+  setText("teacherUnderstand", (student.skills?.understand || 0) + "%");
+  setText("teacherCompare", (student.skills?.compare || 0) + "%");
+  setText("teacherAnalyze", (student.skills?.analyze || 0) + "%");
+  setText("teacherConclusion", (student.skills?.conclusion || 0) + "%");
+
+  setText("teacherUnderstandNote", getLevel(student.skills?.understand || 0));
+  setText("teacherCompareNote", getLevel(student.skills?.compare || 0));
+  setText("teacherAnalyzeNote", getLevel(student.skills?.analyze || 0));
+  setText("teacherConclusionNote", getLevel(student.skills?.conclusion || 0));
+
+  setText("teacherAdvice", getAdvice(total));
+}
+
+// =====================================================
+// 14. МҰҒАЛІМ ДИАГРАММАСЫ
+// =====================================================
+let teacherChartInstance = null;
+
+function renderTeacherChart(student) {
+  const ctx = document.getElementById("teacherChart");
+  if (!ctx || !window.Chart) return;
+
+  if (teacherChartInstance) {
+    teacherChartInstance.destroy();
+  }
+
+  teacherChartInstance = new Chart(ctx, {
+    type: "radar",
+    data: {
+      labels: ["Түсіну", "Салыстыру", "Талдау", "Қорытынды"],
+      datasets: [{
+        label: student.name,
+        data: [
+          student.skills?.understand || 0,
+          student.skills?.compare || 0,
+          student.skills?.analyze || 0,
+          student.skills?.conclusion || 0
+        ],
+        backgroundColor: "rgba(37, 99, 235, 0.18)",
+        borderColor: "#2563eb",
+        pointBackgroundColor: "#2563eb"
+      }]
+    },
+    options: {
+      scales: {
+        r: {
+          beginAtZero: true,
+          max: 100
+        }
+      }
+    }
+  });
+}
+
+// =====================================================
+// 15. ЖАУАПТАРДЫ КӨРСЕТУ
+// =====================================================
+function showAnswers(name) {
+  const student = findStudentByName(name);
+  const box = document.getElementById("answersBox");
+  if (!box) return;
+
+  if (!student) {
+    box.innerHTML = "Оқушы табылмады.";
+    return;
+  }
+
+  const diagnostic = student.diagnosticAnswers || {};
+  const tasks = student.answers || {};
+
+  let html = `
+    <h3>${student.name} — толық жауаптар</h3>
+    <p><b>Сынып:</b> ${student.class || "4-сынып"}</p>
+    <p><b>Әлсіз дағды:</b> ${student.weakSkill || "Әлі анықталмады"}</p>
+    <p><b>Қате саны:</b> ${student.mistakes || 0}</p>
+  `;
+
+  html += `<h4>Диагностика жауаптары</h4>`;
+  html += renderAnswerGroup(diagnostic);
+
+  html += `<h4>Практикалық тапсырма жауаптары</h4>`;
+  html += renderAnswerGroup(tasks);
+
+  box.innerHTML = html;
+}
+
+function renderAnswerGroup(group) {
+  const entries = Object.entries(group || {});
+  if (entries.length === 0) {
+    return `<p>Жауаптар әлі сақталмаған.</p>`;
+  }
+
+  let html = "";
+
+  entries.forEach(([key, item]) => {
+    const color = item.status ? "#22c55e" : "#ef4444";
+    const icon = item.status ? "✔" : "✘";
+
+    html += `
+      <div class="answer-card" style="border-left: 6px solid ${color};">
+        <b>${key.toUpperCase()}. ${item.question}</b>
+        <p><b>Оқушы жауабы:</b> ${item.user || "-"}</p>
+        <p><b>Дұрыс жауап/талап:</b> ${item.correct}</p>
+        <p style="color:${color}; font-weight:800;">${icon} ${item.status ? "Дұрыс" : "Қате"}</p>
+      </div>
+    `;
+  });
+
+  return html;
+}
+
+// =====================================================
+// 16. РЕЙТИНГ
+// =====================================================
+function renderRanking(students) {
+  const table = document.getElementById("rankingTable");
+  if (!table) return;
+
+  const sorted = [...students].sort((a, b) => {
+    return calculateTotal(b.diagnostic, b.task) - calculateTotal(a.diagnostic, a.task);
+  });
+
+  table.innerHTML = "";
+
+  if (sorted.length === 0) {
+    table.innerHTML = `
+      <tr>
+        <td colspan="4">Рейтинг әлі жоқ.</td>
+      </tr>
+    `;
+    return;
+  }
+
+  sorted.forEach((student, index) => {
+    const total = calculateTotal(student.diagnostic, student.task);
+
+    table.innerHTML += `
+      <tr>
+        <td>${index + 1}</td>
+        <td>${student.name}</td>
+        <td>${student.class || "4-сынып"}</td>
+        <td><b>${total}%</b></td>
+      </tr>
+    `;
+  });
+}
+
+// =====================================================
+// 17. ЕҢ ҚИЫН СҰРАҚТЫ АНЫҚТАУ
+// =====================================================
+function hardestQuestion() {
+  const students = getStudents();
+  let mistakes = {};
+
+  students.forEach(student => {
+    const groups = [student.diagnosticAnswers, student.answers];
+
+    groups.forEach(group => {
+      if (!group) return;
+
+      Object.entries(group).forEach(([key, item]) => {
+        if (!item.status) {
+          mistakes[key] = (mistakes[key] || 0) + 1;
+        }
+      });
+    });
+  });
+
+  const sorted = Object.entries(mistakes).sort((a, b) => b[1] - a[1]);
+
+  if (sorted.length === 0) return "Қате жоқ";
+
+  const [key, count] = sorted[0];
+
+  const allQuestions = {
+    ...diagnosticQuestions,
+    ...taskQuestions
+  };
+
+  return `${key.toUpperCase()} — ${allQuestions[key]?.question || "сұрақ"} (${count} қате)`;
+}
+
+// =====================================================
+// 18. БАРЛЫҚ НӘТИЖЕНІ ТАЗАРТУ
+// =====================================================
 function clearAllResults() {
+  const confirmDelete = confirm("Барлық оқушы нәтижелерін өшіруге сенімдісіз бе?");
+
+  if (!confirmDelete) return;
+
   localStorage.removeItem("students");
   localStorage.removeItem("currentStudent");
+
   alert("Барлық нәтижелер тазартылды.");
   location.reload();
 }
